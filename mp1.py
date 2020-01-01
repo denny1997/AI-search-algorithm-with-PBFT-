@@ -3,6 +3,7 @@ import sys
 import argparse
 import time
 import threading
+import math
 
 from pygame.locals import *
 from maze import Maze
@@ -35,27 +36,47 @@ class thread(threading.Thread):
         print("from" + self.name, id(self.startPoints))
         self.startPoints.remove(self.startPos)
         self.newObjectPos=[]
+
+        # modification starts
+        pendingTaskNum[self.name] = len(self.newObjectPos)
+        objectNum = len(dic[self.name])
+        agentNum = len(dic.keys())
+        averageNum = math.ceil(objectNum/agentNum)
+
+
+        # modification ends
         print("from" + self.name, self.startPoints,self.startPos)
         for i in dic[self.name]:
+            eagerness = (averageNum - len(self.newObjectPos))/averageNum
+            if eagerness<0:
+                eagerness = 0
+            eagernessGlob[self.startPos] = (1.5-eagerness)**5
+            eagerWait[0] += 1
+            while eagerWait[0] < agentNum:
+                pass
             dis=abs(weightPos[self.startPos][0]-i[0])+abs(weightPos[self.startPos][1]-i[1])
+            print(eagernessGlob)
+            dis = dis * eagernessGlob[self.startPos]
+            # print(self.name, dis)
             for p in self.startPoints:
-                if abs(weightPos[p][0]-i[0])+abs(weightPos[p][1]-i[1])<dis:
+                if abs(weightPos[p][0]-i[0])+abs(weightPos[p][1]-i[1])<dis/eagernessGlob[p]:
                     waitCount[self.name]=1
                     while waitCount[self.name]:
                         pass
                     break
-                elif abs(weightPos[p][0]-i[0])+abs(weightPos[p][1]-i[1])==dis and weightPos[p][0]<weightPos[self.startPos][0]:
+                elif abs(weightPos[p][0]-i[0])+abs(weightPos[p][1]-i[1])==dis/eagernessGlob[p] and weightPos[p][0]<weightPos[self.startPos][0]:
                     waitCount[self.name] = 1
                     while waitCount[self.name]:
                         pass
                     break
-                elif abs(weightPos[p][0]-i[0])+abs(weightPos[p][1]-i[1])==dis and weightPos[p][0]==weightPos[self.startPos][0] and weightPos[p][1]<weightPos[self.startPos][1]:
+                elif abs(weightPos[p][0]-i[0])+abs(weightPos[p][1]-i[1])==dis/eagernessGlob[p] and weightPos[p][0]==weightPos[self.startPos][0] and weightPos[p][1]<weightPos[self.startPos][1]:
                     waitCount[self.name] = 1
                     while waitCount[self.name]:
                         pass
                     break
             else:
                 self.newObjectPos.append(i)
+                pendingTaskNum[self.name] = len(self.newObjectPos)
                 while sum(waitCount[x] for x in waitCount)<self.robotNum-1:
                     pass
                 weightPos[self.startPos]=((weightPos[self.startPos][0]+i[0])//2,(weightPos[self.startPos][1]+i[1])//2)
@@ -230,10 +251,16 @@ if __name__ == "__main__":
     parser.add_argument('--altcolor', dest="altcolor", default = False, action = "store_true",
                         help='View in an alternate color scheme.')
 
-    dic={}
-    path={}
-    weightPos={}
+    dic={}  # all objects
+    path={} # tasks for each agent
+    weightPos={} # Weight
     waitCount={}
+
+    pendingTaskNum = {}
+    eagernessGlob = {}
+    eagerWait = {}
+    eagerWait[0] = 0
+
     args = parser.parse_args()
     app = Application(args.scale, args.fps,args.altcolor)
     app.execute(args.filename, args.save)

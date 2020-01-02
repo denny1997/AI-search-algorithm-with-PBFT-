@@ -4,6 +4,8 @@ import argparse
 import time
 import threading
 import math
+import private_chain
+import util
 
 from pygame.locals import *
 from maze import Maze
@@ -18,73 +20,108 @@ class thread(threading.Thread):
 
     def run(self):
         print('%s:Now timestamp is %s'%(self.name,time.time()))
-        dic[self.name]=set(self.maze.getObjectives())
-        while len(dic)<self.robotNum:
+        self.privateChain = private_chain.PrivateChain() #创建私有链
+        self.privateChain.map = set(self.maze.getObjectives()) #构建私有地图
+        #dic[self.name]=set(self.maze.getObjectives())
+        ByzantineSystem[self.name]=self.privateChain #私有链加入拜占庭共识系统
+        ByzantineSystem[self.name].sysout()
+
+        # while len(dic)<self.robotNum:
+        #     pass
+        while len(ByzantineSystem)<self.robotNum:  #等待所有节点上线
             pass
         count={}
-        for i in dic:
-            if tuple(dic[i]) in count:
-                count[tuple(dic[i])]+=1
+        # for i in dic:
+        #     if tuple(dic[i]) in count:
+        #         count[tuple(dic[i])]+=1
+        #     else:
+        #         count[tuple(dic[i])]=1
+        for i in ByzantineSystem:  #地图拜占庭共识开始
+            if tuple(ByzantineSystem[i].map) in count:
+                count[tuple(ByzantineSystem[i].map)]+=1
             else:
-                count[tuple(dic[i])]=1
-        dic[self.name]=set(max(count,key=lambda x:count[x]))
-        weightPos[self.startPos]=self.startPos
-        while len(weightPos)<self.robotNum:
-            pass
-        waitCount[self.name]=0
+                count[tuple(ByzantineSystem[i].map)]=1
+        self.privateChain.map=set(max(count,key=lambda x:count[x])) #完成拜占庭共识，对私有链中的地图进行修正，依照少数服从多数规则
+        ByzantineSystem[self.name].sysout()
+
+        #weightPos[self.startPos] = self.startPos
+        self.privateChain.weightPos=self.startPos #路径重心初始化
+
+        util.syncthreads(ByzantineSystem,self.privateChain) #线程同步
+        ByzantineSystem[self.name].sysout()
+
+        # while len(weightPos)<self.robotNum:
+        #     pass
+        #waitCount[self.name]=0
         self.startPoints=self.maze.getStart()[:]
         print("from" + self.name, id(self.startPoints))
         self.startPoints.remove(self.startPos)
         self.newObjectPos=[]
 
         # modification starts
-        pendingTaskNum[self.name] = len(self.newObjectPos)
-        objectNum = len(dic[self.name])
-        agentNum = len(dic.keys())
+        #pendingTaskNum[self.name] = len(self.newObjectPos)
+        self.privateChain.pendingTaskNum = len(self.newObjectPos)
+        objectNum = len(self.privateChain.map)
+        agentNum = len(ByzantineSystem)
         averageNum = math.ceil(objectNum/agentNum)
 
 
         # modification ends
         print("from" + self.name, self.startPoints,self.startPos)
-        for i in dic[self.name]:
+        # for i in dic[self.name]:
+        for i in self.privateChain.map:
             eagerness = (averageNum - len(self.newObjectPos))/averageNum
             if eagerness<0:
                 eagerness = 0
-            eagernessGlob[self.startPos] = (1.5-eagerness)**5
-            eagerWait[0] += 1
-            while eagerWait[0] < agentNum:
-                pass
-            dis=abs(weightPos[self.startPos][0]-i[0])+abs(weightPos[self.startPos][1]-i[1])
-            print(eagernessGlob)
-            dis = dis * eagernessGlob[self.startPos]
+            #eagerWait[self.name]=0
+            #eagernessGlob[self.startPos] = (1.5-eagerness)**5
+            self.privateChain.eagernessGlob = (1.5-eagerness)**5
+            # eagerWait[self.name] = 1
+            # while sum(eagerWait.values()) < agentNum:
+            #     pass
+            util.syncthreads(ByzantineSystem,self.privateChain) #线程同步
+            #dis = abs(weightPos[self.startPos][0] - i[0]) + abs(weightPos[self.startPos][1] - i[1])
+            dis=abs(self.privateChain.weightPos[0]-i[0])+abs(self.privateChain.weightPos[1]-i[1]) #计算当前节点到目标点的距离
+            #print(eagernessGlob)
+            #dis = dis * eagernessGlob[self.startPos]
+            dis = dis * self.privateChain.eagernessGlob
             # print(self.name, dis)
-            for p in self.startPoints:
-                if abs(weightPos[p][0]-i[0])+abs(weightPos[p][1]-i[1])<dis/eagernessGlob[p]:
-                    waitCount[self.name]=1
-                    while waitCount[self.name]:
-                        pass
+            for p in self.startPoints: #计算其他点到目标点是否有更短距离
+                # if abs(weightPos[p][0]-i[0])+abs(weightPos[p][1]-i[1])<dis/eagernessGlob[p]:
+                if abs(ByzantineSystem[str(p)].weightPos[0] - i[0]) + abs(ByzantineSystem[str(p)].weightPos[1] - i[1]) < dis / ByzantineSystem[str(p)].eagernessGlob:
+                    # waitCount[self.name]=1
+                    # while waitCount[self.name]:
+                    #     pass
+                    util.semaphoreWait(self.privateChain) #有更短距离，线程中断，等待该节点的信号量通知
                     break
-                elif abs(weightPos[p][0]-i[0])+abs(weightPos[p][1]-i[1])==dis/eagernessGlob[p] and weightPos[p][0]<weightPos[self.startPos][0]:
-                    waitCount[self.name] = 1
-                    while waitCount[self.name]:
-                        pass
+                # elif abs(weightPos[p][0]-i[0])+abs(weightPos[p][1]-i[1])==dis/eagernessGlob[p] and weightPos[p][0]<weightPos[self.startPos][0]:
+                elif abs(ByzantineSystem[str(p)].weightPos[0] - i[0]) + abs(ByzantineSystem[str(p)].weightPos[1] - i[1]) == dis / ByzantineSystem[str(p)].eagernessGlob and ByzantineSystem[str(p)].weightPos[0] < self.privateChain.weightPos[0]:
+                    # waitCount[self.name] = 1
+                    # while waitCount[self.name]:
+                    #     pass
+                    util.semaphoreWait(self.privateChain)
                     break
-                elif abs(weightPos[p][0]-i[0])+abs(weightPos[p][1]-i[1])==dis/eagernessGlob[p] and weightPos[p][0]==weightPos[self.startPos][0] and weightPos[p][1]<weightPos[self.startPos][1]:
-                    waitCount[self.name] = 1
-                    while waitCount[self.name]:
-                        pass
+                # elif abs(weightPos[p][0]-i[0])+abs(weightPos[p][1]-i[1])==dis/eagernessGlob[p] and weightPos[p][0]==weightPos[self.startPos][0] and weightPos[p][1]<weightPos[self.startPos][1]:
+                elif abs(ByzantineSystem[str(p)].weightPos[0] - i[0]) + abs(ByzantineSystem[str(p)].weightPos[1] - i[1]) == dis / ByzantineSystem[str(p)].eagernessGlob and ByzantineSystem[str(p)].weightPos[0] == self.privateChain.weightPos[0] and ByzantineSystem[str(p)].weightPos[1] < self.privateChain.weightPos[1]:
+                    # waitCount[self.name] = 1
+                    # while waitCount[self.name]:
+                    #     pass
+                    util.semaphoreWait(self.privateChain)
                     break
-            else:
+            else: #更新属于自己的目标集合
                 self.newObjectPos.append(i)
-                pendingTaskNum[self.name] = len(self.newObjectPos)
-                while sum(waitCount[x] for x in waitCount)<self.robotNum-1:
-                    pass
-                weightPos[self.startPos]=((weightPos[self.startPos][0]+i[0])//2,(weightPos[self.startPos][1]+i[1])//2)
-                for k in waitCount:
-                    waitCount[k]=0
+                #pendingTaskNum[self.name] = len(self.newObjectPos)
+                self.privateChain.pendingTaskNum = len(self.newObjectPos)
+                # while sum(waitCount[x] for x in waitCount)<self.robotNum-1:
+                #     pass
+                util.semaphoreWaitToNotify(ByzantineSystem) #等待其他线程同步
+                self.privateChain.weightPos=((self.privateChain.weightPos[0]+i[0])//2,(self.privateChain.weightPos[1]+i[1])//2) #更新重心位置
+                # for k in waitCount:
+                #     waitCount[k]=0
+                util.semaphoreNotify(ByzantineSystem) #信号量通知其他线程继续运行
         print("from"+self.name,self.newObjectPos)
-        self.path = astar_multi(self.maze, self.startPos,self.newObjectPos)
-        path[self.name]=self.path
+        self.path = astar_multi(self.maze, self.startPos,self.newObjectPos) #调用A*算法，返回路径
+        self.privateChain.path=self.path
 
 class Application:
     def __init__(self, scale=20, fps=30,alt_color=False):
@@ -118,13 +155,14 @@ class Application:
 
         threads = []
         for a,b in self.maze.getStart():  # 线程个数
-            threads.append(thread("("+str(a)+","+str(b)+")",self.maze,(a,b)))
+            threads.append(thread("("+str(a)+", "+str(b)+")",self.maze,(a,b)))
         for t in threads:  # 开启线程
             t.start()
         for t in threads:  # 阻塞线程
             t.join()
         print('END')
-        print(max(len(path[x]) for x in path))
+        #print([x.path for x in ByzantineSystem.values()])
+        print(max(len(x.path) for x in ByzantineSystem.values()))
 
         pygame.init()
         self.displaySurface = pygame.display.set_mode((self.windowWidth, self.windowHeight), pygame.HWSURFACE)
@@ -137,7 +175,8 @@ class Application:
         self.drawObjective()
 
 
-        self.drawPath(path)
+        #self.drawPath(path)
+        self.drawPath(ByzantineSystem)
 
         self.drawMaze()
         self.drawStart()
@@ -189,13 +228,22 @@ class Application:
         return (red, green, blue)
 
     # Draws the path (given as a list of (row, col) tuples) to the display context
-    def drawPath(self, path):
-        maxlen=max(len(path[x]) for x in path)
+    # def drawPath(self, path):
+    #     maxlen=max(len(path[x]) for x in path)
+    #     for i in range(maxlen):
+    #         for j in path:
+    #             if len(path[j])>i:
+    #                 color = self.getColor(len(path[j]), i, self.alt_color)
+    #                 self.drawCircle(path[j][i][0], path[j][i][1], color)
+    #         pygame.display.flip()
+    #         time.sleep(0.5)
+    def drawPath(self, system):
+        maxlen=max(len(x.path) for x in system.values())
         for i in range(maxlen):
-            for j in path:
-                if len(path[j])>i:
-                    color = self.getColor(len(path[j]), i, self.alt_color)
-                    self.drawCircle(path[j][i][0], path[j][i][1], color)
+            for j in system.values():
+                if len(j.path)>i:
+                    color = self.getColor(len(j.path), i, self.alt_color)
+                    self.drawCircle(j.path[i][0], j.path[i][1], color)
             pygame.display.flip()
             time.sleep(0.5)
 
@@ -251,15 +299,15 @@ if __name__ == "__main__":
     parser.add_argument('--altcolor', dest="altcolor", default = False, action = "store_true",
                         help='View in an alternate color scheme.')
 
-    dic={}  # all objects
-    path={} # tasks for each agent
-    weightPos={} # Weight
-    waitCount={}
-
-    pendingTaskNum = {}
-    eagernessGlob = {}
-    eagerWait = {}
-    eagerWait[0] = 0
+    ByzantineSystem={}
+    # dic={}  # all objects
+    # path={} # tasks for each agent
+    # weightPos={} # Weight
+    # waitCount={}
+    #
+    # pendingTaskNum = {}
+    # eagernessGlob = {}
+    # eagerWait = {}
 
     args = parser.parse_args()
     app = Application(args.scale, args.fps,args.altcolor)

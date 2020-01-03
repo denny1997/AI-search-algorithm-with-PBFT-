@@ -1,21 +1,24 @@
+from block import Block
+from crypto import getHash
+import copy
+
 class PrivateChain:
     def __init__(self):
-        self.map=None
-        self.path=None
-        self.weightPos=None
-        self.pendingTaskNum=None
-        self.eagernessGlob=None
-        self.syncFlag=0
-        self.syncReady=0
-        self.semaphore=0
+        self.blocks=[]
+        self.blocks.append(Block())
+        self.curIndex=0
+        self.headBlock=self.blocks[self.curIndex]
+        self.curBlock=self.blocks[self.curIndex]
 
-    def sysout(self):
-        print("------------------")
-        print("map",self.map)
-        print("path",self.path)
-        print("weight",self.weightPos)
-        print("pend",self.pendingTaskNum)
-        print("eager",self.eagernessGlob)
-        print("sync",self.syncFlag)
-        print("sema",self.semaphore)
-        print("------------------")
+    def generateNextBlock(self):
+        nextBlock=copy.deepcopy(self.curBlock)
+        nextBlock.lastBlockHash = getHash(str(self.curBlock))
+        self.blocks.append(nextBlock)
+        self.curIndex+=1
+        self.curBlock = self.blocks[self.curIndex]
+
+
+p = PrivateChain()
+p.generateNextBlock()
+
+

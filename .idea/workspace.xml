@@ -2,19 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ed3f3980-a7a3-4a44-a0c7-569c1a1641c7" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/block.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ByzantineSystem.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Represent.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BasicMap_granularity2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/map/BasicMap_granularity2.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigDots.txt" beforeDir="false" afterPath="$PROJECT_DIR$/map/bigDots.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigMaze.txt" beforeDir="false" afterPath="$PROJECT_DIR$/map/bigMaze.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mediumMaze.txt" beforeDir="false" afterPath="$PROJECT_DIR$/map/mediumMaze.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mediumSearch.txt" beforeDir="false" afterPath="$PROJECT_DIR$/map/mediumSearch.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mp1.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/openMaze.txt" beforeDir="false" afterPath="$PROJECT_DIR$/map/openMaze.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/private_chain.py" beforeDir="false" afterPath="$PROJECT_DIR$/private_chain.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/smallSearch.txt" beforeDir="false" afterPath="$PROJECT_DIR$/map/smallSearch.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tinySearch.txt" beforeDir="false" afterPath="$PROJECT_DIR$/map/tinySearch.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ByzatineSearchSystem.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -45,23 +36,23 @@
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="crypto" value="1" />
-          <entry key="py" value="7" />
+          <entry key="py" value="15" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="8" />
+          <entry key="Python" value="16" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="crypto" value="317" />
-          <entry key="py" value="2358" />
+          <entry key="py" value="2722" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="2675" />
+          <entry key="Python" value="3039" />
         </counts>
       </usages-collector>
     </session>
@@ -94,14 +85,36 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/ByzatineSearchSystem.py">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Represent.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="60" column="50" selection-start-line="60" selection-start-column="50" selection-end-line="60" selection-end-column="50" />
+            <state relative-caret-position="2413">
+              <caret line="127" column="29" lean-forward="true" selection-start-line="127" selection-start-column="29" selection-end-line="127" selection-end-column="29" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
+                <marker date="1578091388384" expanded="true" signature="118:119" ph="..." />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ByzantineNode.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="206">
+              <caret line="92" column="49" lean-forward="true" selection-start-line="92" selection-start-column="49" selection-end-line="92" selection-end-column="49" />
+              <folding>
+                <element signature="e#0#16#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ByzantineSystem.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret column="18" lean-forward="true" selection-start-column="18" selection-end-column="18" />
             </state>
           </provider>
         </entry>
@@ -122,13 +135,26 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/util.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="309">
+            <state relative-caret-position="310">
               <caret line="22" column="18" selection-start-line="22" selection-start-column="18" selection-end-line="22" selection-end-column="18" />
               <folding>
                 <marker date="1578087587330" expanded="true" signature="35:40" ph="..." />
                 <marker date="1578087587330" expanded="true" signature="406:411" ph="..." />
                 <marker date="1578087587330" expanded="true" signature="532:537" ph="..." />
                 <marker date="1578087587330" expanded="true" signature="651:656" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Application.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="230">
+              <caret line="64" column="31" lean-forward="true" selection-start-line="64" selection-start-column="31" selection-end-line="64" selection-end-column="31" />
+              <folding>
+                <element signature="e#0#13#0" expanded="true" />
+                <marker date="1578091388368" expanded="true" signature="390:399" ph="..." />
               </folding>
             </state>
           </provider>
@@ -156,6 +182,12 @@
         <option value="$PROJECT_DIR$/private_chain.py" />
         <option value="$PROJECT_DIR$/util.py" />
         <option value="$PROJECT_DIR$/ByzatineSearchSystem.py" />
+        <option value="$PROJECT_DIR$/ByzatineNode.py" />
+        <option value="$PROJECT_DIR$/ByzatineSystem.py" />
+        <option value="$PROJECT_DIR$/ByzantineNode.py" />
+        <option value="$PROJECT_DIR$/ByzantineSystem.py" />
+        <option value="$PROJECT_DIR$/Represent.py" />
+        <option value="$PROJECT_DIR$/Application.py" />
       </list>
     </option>
   </component>
@@ -165,7 +197,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="525" />
     <option name="y" value="46" />
     <option name="width" value="1150" />
@@ -186,11 +218,6 @@
             <path>
               <item name="mp1" type="b2602c69:ProjectViewProjectNode" />
               <item name="mp1" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="mp1" type="b2602c69:ProjectViewProjectNode" />
-              <item name="mp1" type="462c0819:PsiDirectoryNode" />
-              <item name="map" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -431,40 +458,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/block.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="114">
-          <caret line="6" column="27" lean-forward="true" selection-start-line="6" selection-start-column="27" selection-end-line="6" selection-end-column="27" />
-          <folding>
-            <marker date="1578086464465" expanded="true" signature="24:25" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/crypto.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="40" selection-start-line="40" selection-start-column="2" selection-end-line="45" selection-end-column="24" />
-          <folding>
-            <element signature="e#0#25#0" expanded="true" />
-            <marker date="1578086454610" expanded="true" signature="1116:1209" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="309">
-          <caret line="22" column="18" selection-start-line="22" selection-start-column="18" selection-end-line="22" selection-end-column="18" />
-          <folding>
-            <marker date="1578087587330" expanded="true" signature="35:40" ph="..." />
-            <marker date="1578087587330" expanded="true" signature="406:411" ph="..." />
-            <marker date="1578087587330" expanded="true" signature="532:537" ph="..." />
-            <marker date="1578087587330" expanded="true" signature="651:656" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/private_chain.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
@@ -479,10 +472,97 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ByzatineSearchSystem.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="60" column="50" selection-start-line="60" selection-start-column="50" selection-end-line="60" selection-end-column="50" />
+        <state relative-caret-position="227">
+          <caret line="35" column="21" lean-forward="true" selection-start-line="35" selection-start-column="21" selection-end-line="35" selection-end-column="21" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ByzatineSystem.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="19">
+          <caret line="1" column="18" lean-forward="true" selection-start-line="1" selection-start-column="18" selection-end-line="1" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ByzatineNode.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1516">
+          <caret line="5" selection-start-line="5" selection-end-line="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/crypto.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="40" selection-start-line="40" selection-start-column="2" selection-end-line="45" selection-end-column="24" />
+          <folding>
+            <element signature="e#0#25#0" expanded="true" />
+            <marker date="1578086454610" expanded="true" signature="1116:1209" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ByzantineSystem.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="18" lean-forward="true" selection-start-column="18" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/block.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="114">
+          <caret line="6" column="27" lean-forward="true" selection-start-line="6" selection-start-column="27" selection-end-line="6" selection-end-column="27" />
+          <folding>
+            <marker date="1578086464465" expanded="true" signature="24:25" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ByzantineNode.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="206">
+          <caret line="92" column="49" lean-forward="true" selection-start-line="92" selection-start-column="49" selection-end-line="92" selection-end-column="49" />
+          <folding>
+            <element signature="e#0#16#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="310">
+          <caret line="22" column="18" selection-start-line="22" selection-start-column="18" selection-end-line="22" selection-end-column="18" />
+          <folding>
+            <marker date="1578087587330" expanded="true" signature="35:40" ph="..." />
+            <marker date="1578087587330" expanded="true" signature="406:411" ph="..." />
+            <marker date="1578087587330" expanded="true" signature="532:537" ph="..." />
+            <marker date="1578087587330" expanded="true" signature="651:656" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Represent.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2413">
+          <caret line="127" column="29" lean-forward="true" selection-start-line="127" selection-start-column="29" selection-end-line="127" selection-end-column="29" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+            <marker date="1578091388384" expanded="true" signature="118:119" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Application.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="230">
+          <caret line="64" column="31" lean-forward="true" selection-start-line="64" selection-start-column="31" selection-end-line="64" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+            <marker date="1578091388368" expanded="true" signature="390:399" ph="..." />
           </folding>
         </state>
       </provider>

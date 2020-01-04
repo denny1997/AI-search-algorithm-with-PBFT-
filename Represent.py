@@ -2,8 +2,6 @@ import pygame
 from pygame.locals import *
 import time
 
-from ByzantineSystem import ByzantineSystem
-
 class Represent():
     def __init__(self, scale=20, fps=30,alt_color=False):
         self.running = True
@@ -12,6 +10,7 @@ class Represent():
         self.fps = fps
         self.windowTitle = "Multi-A* with PBFT Algorithm demo "
         self.alt_color = alt_color
+        self.path={}
 
     # Initializes the pygame context and certain properties of the maze
     def initialize(self, filename, gridDim, maze):
@@ -51,24 +50,33 @@ class Represent():
         return (red, green, blue)
 
     # Draws the path (given as a list of (row, col) tuples) to the display context
-    # def drawPath(self, path):
-    #     maxlen=max(len(path[x]) for x in path)
-    #     for i in range(maxlen):
-    #         for j in path:
-    #             if len(path[j])>i:
-    #                 color = self.getColor(len(path[j]), i, self.alt_color)
-    #                 self.drawCircle(path[j][i][0], path[j][i][1], color)
-    #         pygame.display.flip()
-    #         time.sleep(0.5)
-    def drawPath(self, system):
-        maxlen = max(len(x.curBlock.path) for x in system.values())
+    def drawPath(self, path):
+        maxlen=max(len(x) for x in path)
         for i in range(maxlen):
-            for j in system.values():
-                if len(j.curBlock.path) > i:
-                    color = self.getColor(len(j.curBlock.path), i, self.alt_color)
-                    self.drawCircle(j.curBlock.path[i][0], j.curBlock.path[i][1], color)
+            for j in path:
+                if len(j)>i:
+                    color = self.getColor(len(j), i, self.alt_color)
+                    self.drawCircle(j[i][0], j[i][1], color)
             pygame.display.flip()
             time.sleep(0.5)
+    # def drawPath(self, system):
+    #     maxlen = max(len(x.curBlock.path) for x in system.values())
+    #     for i in range(maxlen):
+    #         for j in system.values():
+    #             if len(j.curBlock.path) > i:
+    #                 color = self.getColor(len(j.curBlock.path), i, self.alt_color)
+    #                 self.drawCircle(j.curBlock.path[i][0], j.curBlock.path[i][1], color)
+    #         pygame.display.flip()
+    #         time.sleep(0.5)
+    # def drawPath(self):
+    #     maxlen = max(len(self.path[x]) for x in self.path)
+    #     for i in range(maxlen):
+    #         for j in self.path.values():
+    #             if len(j) > i:
+    #                 color = self.getColor(len(j), i, self.alt_color)
+    #                 self.drawCircle(j[i][0], j[i][1], color)
+    #         pygame.display.flip()
+    #         time.sleep(0.5)
 
     # Simple wrapper for drawing a wall as a rectangle
     def drawWall(self, row, col):
@@ -107,7 +115,7 @@ class Represent():
                 if self.maze.isWall(row, col):
                     self.drawWall(row, col)
 
-    def draw(self,save):
+    def draw(self,path,save):
         pygame.init()
         self.displaySurface = pygame.display.set_mode((self.windowWidth, self.windowHeight), pygame.HWSURFACE)
         self.displaySurface.fill((255, 255, 255))
@@ -119,7 +127,7 @@ class Represent():
         self.drawObjective()
 
         # self.drawPath(path)
-        self.drawPath(ByzantineSystem)
+        self.drawPath(path)
 
         self.drawMaze()
         self.drawStart()

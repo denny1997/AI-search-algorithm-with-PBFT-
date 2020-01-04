@@ -3,8 +3,8 @@ import argparse
 from maze import Maze
 
 from ByzantineNode import ByzantineNode
-from ByzantineSystem import ByzantineSystem
 from Represent import Represent
+from message_queue import MessageQueue
 
 class Application:
     def __init__(self, scale=20, fps=30,alt_color=False):
@@ -16,6 +16,7 @@ class Application:
         self.maze = Maze(filename)
         self.gridDim = self.maze.getDimensions()
         self.represent.initialize(filename,self.gridDim,self.maze)
+        self.messageQueue = MessageQueue(app.maze.getStart())
 
     # Once the application is initiated, execute is in charge of drawing the game and dealing with the game loop
     def execute(self, filename, save):
@@ -27,15 +28,16 @@ class Application:
 
         threads = []
         for a,b in self.maze.getStart():  # 线程个数
-            threads.append(ByzantineNode("("+str(a)+", "+str(b)+")",self.maze,(a,b)))
+            threads.append(ByzantineNode("("+str(a)+", "+str(b)+")",self.maze,(a,b), self.messageQueue))
         for t in threads:  # 开启线程
             t.start()
         for t in threads:  # 阻塞线程
             t.join()
         print('END')
-        print(max(len(x.curBlock.path) for x in ByzantineSystem.values()))
 
-        self.represent.draw(save)
+        print(max(len(x) for x in self.messageQueue.path.values()))
+
+        self.represent.draw(self.messageQueue.path.values(),save)
 
 
 if __name__ == "__main__":
@@ -59,5 +61,7 @@ if __name__ == "__main__":
                         help='View in an alternate color scheme.')
 
     args = parser.parse_args()
+
     app = Application(args.scale, args.fps,args.altcolor)
+
     app.execute(args.filename, args.save)

@@ -76,17 +76,22 @@ class ByzantineNode(threading.Thread):
             self.privateChain.curBlock.weightPos[str(i)]=i
             self.privateChain.curBlock.tasks[str(i)]=[]
             eagerness = (averageNum - len(self.privateChain.curBlock.tasks[str(i)])) / averageNum
+
             if eagerness < 0:
                 eagerness = 0
 
             self.privateChain.curBlock.eagernessGlob[str(i)] = (1.5 - eagerness) ** 5
-
+            # self.privateChain.curBlock.eagernessGlob[str(i)] = 1
+        #
         self.messageQueue.syncthreads(self.name) #线程同步
 
         for i in self.privateChain.curBlock.map:
             dis=float("inf")
             dis_name=None
+            # flag = 0
+
             for p in self.maze.getStart():
+
                 if abs(self.privateChain.curBlock.weightPos[str(p)][0] - i[0]) + \
                         abs(self.privateChain.curBlock.weightPos[str(p)][1] - i[1]) < \
                         dis / self.privateChain.curBlock.eagernessGlob[str(p)]:
@@ -129,8 +134,9 @@ class ByzantineNode(threading.Thread):
             eagerness = (averageNum - len(self.privateChain.curBlock.tasks[n])) / averageNum
             if eagerness < 0:
                 eagerness = 0
-
+            #
             self.privateChain.curBlock.eagernessGlob[n] = (1.5 - eagerness) ** 5
+            # self.privateChain.curBlock.eagernessGlob[n] = 1
 
             util.saveBlock(self.name, self.privateChain.curBlock, self.privateChain.curIndex)
             self.privateChain.generateNextBlock()  # 生成下一区块

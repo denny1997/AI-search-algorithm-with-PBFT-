@@ -27,7 +27,7 @@ class Represent():
         # Implementation of a color scheme for the path taken
         # If Red-Green does not work for you while debugging (for e.g. color blindness),
         # you can edit the start and end colors by picking appropriate (R, G, B) values
-    def getColor(self, pathLength, index, alt_color):
+    def getColor(self, pathLength, index, alt_color, pathNum = -1, pathIdx = -1):
         # start_color = (r0, g0, b0)
         # end_color = (r1, g1, b1)
         # example:
@@ -38,6 +38,17 @@ class Represent():
             start_color = (255, 0, 0)
             end_color = (0, 255, 0)
         # default:
+
+        colorSet = [(0, 0, 255),
+                    (255, 0, 0),
+                    (0, 255, 0),
+                    (128, 128, 128),
+                    (255, 255, 0),
+                    (0, 255, 255),
+                    (255, 0, 255)]
+        colorSetLen = len(colorSet)
+        if pathNum >= 0 and pathIdx >= 0:
+            return colorSet[pathIdx % colorSetLen]
 
         r_step = (end_color[0] - start_color[0]) / pathLength
         g_step = (end_color[1] - start_color[1]) / pathLength
@@ -52,13 +63,14 @@ class Represent():
     # Draws the path (given as a list of (row, col) tuples) to the display context
     def drawPath(self, path):
         maxlen=max(len(x) for x in path)
+        pathNum = len(path)
         for i in range(maxlen):
-            for j in path:
+            for pathIdx, j in enumerate(path):
                 if len(j)>i:
-                    color = self.getColor(len(j), i, self.alt_color)
-                    self.drawCircle(j[i][0], j[i][1], color)
+                    color = self.getColor(len(j), i, self.alt_color, pathNum, pathIdx)
+                    self.drawCircle(j[i][0], j[i][1], color, min(self.blockSizeX, self.blockSizeY) / 4)
             pygame.display.flip()
-            time.sleep(0.5)
+            time.sleep(0.1)
     # def drawPath(self, system):
     #     maxlen = max(len(x.curBlock.path) for x in system.values())
     #     for i in range(maxlen):
@@ -86,7 +98,7 @@ class Represent():
     # Simple wrapper for drawing a circle
     def drawCircle(self, row, col, color, radius=None):
         if radius is None:
-            radius = min(self.blockSizeX, self.blockSizeY) / 4
+            radius = min(self.blockSizeX, self.blockSizeY) / 2.5
         pygame.draw.circle(self.displaySurface, color, (
         int(col * self.blockSizeX + self.blockSizeX / 2), int(row * self.blockSizeY + self.blockSizeY / 2)),
                            int(radius))
@@ -130,8 +142,8 @@ class Represent():
         self.drawPath(path)
 
         self.drawMaze()
-        self.drawStart()
-        self.drawObjective()
+        # self.drawStart()
+        # self.drawObjective()
 
         pygame.display.flip()
         if save is not None:

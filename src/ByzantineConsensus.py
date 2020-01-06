@@ -1,8 +1,16 @@
-def ByzantineConsensus(messageCollection):
+def ByzantineConsensus(messageCollection,leader):
     count={}
-    for i in messageCollection:
+    #print(messageCollection)
+    for i,node in messageCollection:
         if i in count:
-            count[i] += 1
+            count[i].append(node)
         else:
-            count[i] = 1
-    return max(count, key=lambda x: count[x])
+            count[i]=[node]
+    maxnum=max(len(count[x]) for x in count)
+    major=[]
+    for i in count:
+        if len(count[i])==maxnum and leader in count[i]:
+            return i,count[i]
+        elif len(count[i])==maxnum:
+            major.append((i,count[i]))
+    return major[0]

@@ -31,7 +31,7 @@ class Application:
 
         threads = []
         for a,b in self.maze.getStart():  # 线程个数
-            threads.append(ByzantineNode("("+str(a)+", "+str(b)+")",self.maze,(a,b), self.messageQueue))
+            threads.append(ByzantineNode("("+str(a)+", "+str(b)+")",filename,(a,b), self.messageQueue))
         for t in threads:  # 开启线程
             t.start()
         for t in threads:  # 阻塞线程

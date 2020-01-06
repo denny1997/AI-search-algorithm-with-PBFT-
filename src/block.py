@@ -10,12 +10,14 @@ class Block:
         self.tasks=None
         self.eagernessGlob=None
         self.pathLengthGlob=None
+        self.leader=None
+        self.message=""
         # self.syncFlag=0
         # self.syncReady=0
         # self.semaphore=0
 
     def __str__(self):
-        return json.dumps({'lastBlockHash':self.lastBlockHash,'map':list(self.map),'path':self.path,'weightPos':self.weightPos,'tasks':self.tasks,'eagernessGlob':self.eagernessGlob,'pathLengthGlob':self.pathLengthGlob})
+        return json.dumps({'lastBlockHash':self.lastBlockHash,'map':list(self.map),'path':self.path,'weightPos':self.weightPos,'tasks':self.tasks,'eagernessGlob':self.eagernessGlob,'pathLengthGlob':self.pathLengthGlob,'leader':self.leader,'message':self.message})
 
 # a=Block()
 # a.lastBlockHash={1:[2,3]}

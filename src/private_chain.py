@@ -13,6 +13,7 @@ class PrivateChain:
     def generateNextBlock(self):
         nextBlock=copy.deepcopy(self.curBlock)
         nextBlock.lastBlockHash = getHash(str(self.curBlock))
+        nextBlock.message=""
         self.blocks.append(nextBlock)
         self.curIndex+=1
         self.curBlock = self.blocks[self.curIndex]

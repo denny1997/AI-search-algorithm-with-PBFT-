@@ -72,6 +72,7 @@ class ByzantineNode(threading.Thread):
         self.privateChain.curBlock.weightPos = {} #路径重心和任务集初始化
         self.privateChain.curBlock.tasks = {}
         self.privateChain.curBlock.eagernessGlob = {}
+        self.privateChain.curBlock.pathLengthGlob = {}
         for i in self.maze.getStart():
             self.privateChain.curBlock.weightPos[str(i)]=i
             self.privateChain.curBlock.tasks[str(i)]=[]
@@ -80,9 +81,9 @@ class ByzantineNode(threading.Thread):
             if eagerness < 0:
                 eagerness = 0
 
-            self.privateChain.curBlock.eagernessGlob[str(i)] = (1.5 - eagerness) ** 5
+            self.privateChain.curBlock.eagernessGlob[str(i)] = (1.5 - eagerness) ** 1
             # self.privateChain.curBlock.eagernessGlob[str(i)] = 1
-        #
+
         self.messageQueue.syncthreads(self.name) #线程同步
 
         for i in self.privateChain.curBlock.map:
@@ -135,8 +136,22 @@ class ByzantineNode(threading.Thread):
             if eagerness < 0:
                 eagerness = 0
             #
-            self.privateChain.curBlock.eagernessGlob[n] = (1.5 - eagerness) ** 5
+            self.privateChain.curBlock.eagernessGlob[n] = (1.5 - eagerness) ** 1
             # self.privateChain.curBlock.eagernessGlob[n] = 1
+
+            if len(self.privateChain.curBlock.tasks[self.name]) >= 1:
+                self.privateChain.curBlock.pathLengthGlob[n] = len(astar_multi(self.maze, self.startPos,self.privateChain.curBlock.tasks[self.name]))
+                # print("not empty", self.name)
+            else:
+                self.privateChain.curBlock.pathLengthGlob[n] = 1
+                # print("empty", self.name)
+
+            # print(type(self.privateChain.curBlock.eagernessGlob[n]), type(self.privateChain.curBlock.pathLengthGlob[n]))
+            # print(self.privateChain.curBlock.eagernessGlob[n],self.privateChain.curBlock.pathLengthGlob[n])
+
+            self.privateChain.curBlock.eagernessGlob[n] = self.privateChain.curBlock.eagernessGlob[n] * self.privateChain.curBlock.pathLengthGlob[n]**0.2
+            print(self.name, self.privateChain.curBlock.tasks[self.name], self.privateChain.curBlock.pathLengthGlob[n],self.privateChain.curBlock.eagernessGlob[n])
+
 
             util.saveBlock(self.name, self.privateChain.curBlock, self.privateChain.curIndex)
             self.privateChain.generateNextBlock()  # 生成下一区块

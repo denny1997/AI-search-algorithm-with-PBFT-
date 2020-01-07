@@ -94,6 +94,22 @@ class ByzantineNode(threading.Thread):
         self.privateChain.curBlock.tasks = {}
         self.privateChain.curBlock.eagernessGlob = {}
         self.privateChain.curBlock.pathLengthGlob = {}
+
+        # parameters
+        # (eagernessBase - eagerness) ** eagernessExp
+
+        # best record: 76 ↓
+        eagernessBase = 1.5
+        eagernessExp = 2
+        pathLengthExp = 0.2
+
+        # eagernessBase = 1.5
+        # eagernessExp = 0
+        # pathLengthExp = 0
+
+
+
+
         for i in self.maze.getStart():
             self.privateChain.curBlock.weightPos[str(i)]=i
             self.privateChain.curBlock.tasks[str(i)]=[]
@@ -102,12 +118,39 @@ class ByzantineNode(threading.Thread):
             if eagerness < 0:
                 eagerness = 0
 
-            self.privateChain.curBlock.eagernessGlob[str(i)] = (1.5 - eagerness) ** 1
+            self.privateChain.curBlock.eagernessGlob[str(i)] = (eagernessBase - eagerness) ** eagernessExp
             # self.privateChain.curBlock.eagernessGlob[str(i)] = 1
+            self.privateChain.curBlock.pathLengthGlob[str(i)] = 1
 
         self.messageQueue.syncthreads(self.name) #线程同步
 
+        orderedMap = []
+        distanceDic = {}
         for i in self.privateChain.curBlock.map:
+            minDistance = float('inf')
+            for p in self.maze.getStart():
+                distance = len(astar_multi(self.maze, p, [i]))
+                if distance < minDistance:
+                    minDistance = distance
+            if minDistance not in distanceDic:
+                distanceDic[minDistance] = [i]
+            else:
+                distanceDic[minDistance].append(i)
+
+        allDistance = distanceDic.keys()
+        allDistance = sorted(allDistance)
+
+        for dis in allDistance:
+            goalList = distanceDic[dis]
+            orderedMap.extend(goalList)
+
+        print(allDistance)
+        print(distanceDic)
+        print(orderedMap)
+
+        for i in orderedMap:
+        # for i in self.privateChain.curBlock.map:
+            # print(i)
             dis=float("inf")
             dis_name=None
             # flag = 0
@@ -154,12 +197,14 @@ class ByzantineNode(threading.Thread):
 
             n,group=ByzantineConsensus(validMsg,self.privateChain.curBlock.leader)
             self.privateChain.curBlock.tasks[n].append(i)
+            # 更新重心位置
             self.privateChain.curBlock.weightPos[n] = ((self.privateChain.curBlock.weightPos[n][0]+i[0])//2,(self.privateChain.curBlock.weightPos[n][1]+i[1])//2) #更新重心位置
+
             eagerness = (averageNum - len(self.privateChain.curBlock.tasks[n])) / averageNum
             if eagerness < 0:
                 eagerness = 0
             #
-            self.privateChain.curBlock.eagernessGlob[n] = (1.5 - eagerness) ** 1
+            self.privateChain.curBlock.eagernessGlob[n] = (eagernessBase - eagerness) ** eagernessExp
             # self.privateChain.curBlock.eagernessGlob[n] = 1
 
             if len(self.privateChain.curBlock.tasks[n]) >= 1:
@@ -172,8 +217,9 @@ class ByzantineNode(threading.Thread):
             # print(type(self.privateChain.curBlock.eagernessGlob[n]), type(self.privateChain.curBlock.pathLengthGlob[n]))
             #print(self.privateChain.curBlock.pathLengthGlob[n])
 
-            self.privateChain.curBlock.eagernessGlob[n] = self.privateChain.curBlock.eagernessGlob[n] * self.privateChain.curBlock.pathLengthGlob[n]**0.2
-            #print(self.name, self.privateChain.curBlock.tasks[self.name], self.privateChain.curBlock.pathLengthGlob[n],self.privateChain.curBlock.eagernessGlob[n])
+            self.privateChain.curBlock.eagernessGlob[n] = self.privateChain.curBlock.eagernessGlob[n] * self.privateChain.curBlock.pathLengthGlob[n]**pathLengthExp
+
+            print(self.name, self.privateChain.curBlock.tasks[self.name], self.privateChain.curBlock.pathLengthGlob[self.name],self.privateChain.curBlock.eagernessGlob[self.name])
 
             for plain, node in validMsg:
                 if node not in group:

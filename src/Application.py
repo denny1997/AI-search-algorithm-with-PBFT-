@@ -3,6 +3,7 @@ import argparse
 from maze import Maze
 
 from ByzantineNode import ByzantineNode
+from TraditionalNode import TraditionalNode
 from Represent import Represent
 from message_queue import MessageQueue
 import util
@@ -20,10 +21,12 @@ class Application:
         self.messageQueue = MessageQueue(app.maze.getStart())
 
     # Once the application is initiated, execute is in charge of drawing the game and dealing with the game loop
-    def execute(self, filename, save):
+    def execute(self, filename, save, consensus):
         util.clearLagacyRecord()
 
         self.initialize(filename)
+        print(type(consensus))
+        print(consensus)
 
         if self.maze is None:
             print("No maze created")
@@ -31,14 +34,20 @@ class Application:
 
         threads = []
         for a,b in self.maze.getStart():  # 线程个数
-            threads.append(ByzantineNode("("+str(a)+", "+str(b)+")",filename,(a,b), self.messageQueue))
+            if consensus:
+                print(consensus)
+                threads.append(ByzantineNode("("+str(a)+", "+str(b)+")",filename,(a,b), self.messageQueue))
+            else:
+                threads.append(TraditionalNode("(" + str(a) + ", " + str(b) + ")", filename, (a, b), self.messageQueue))
         for t in threads:  # 开启线程
             t.start()
         for t in threads:  # 阻塞线程
             t.join()
         print('END')
 
-        print(max(len(x) for x in self.messageQueue.path.values()))
+        res = [len(x) for x in self.messageQueue.path.values()]
+        print(max(res))
+        print(sum(res)//len(res))
 
         self.represent.draw(self.messageQueue.path.values(),save)
 
@@ -57,9 +66,11 @@ if __name__ == "__main__":
                         help='save output to image file - default not saved')
     parser.add_argument('--altcolor', dest="altcolor", default = False, action = "store_true",
                         help='View in an alternate color scheme.')
+    parser.add_argument('--consensus', dest="consensus", type=bool, default=False,
+                        help='whether use consensus - default true')
 
     args = parser.parse_args()
 
     app = Application(args.scale, args.fps,args.altcolor)
 
-    app.execute(args.filename, args.save)
+    app.execute(args.filename, args.save, args.consensus)

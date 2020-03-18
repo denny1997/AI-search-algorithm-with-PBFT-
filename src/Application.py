@@ -7,6 +7,7 @@ from TraditionalNode import TraditionalNode
 from Represent import Represent
 from message_queue import MessageQueue
 import util
+from createMap import create
 
 class Application:
     def __init__(self, scale=20, fps=30,alt_color=False):
@@ -25,7 +26,6 @@ class Application:
         util.clearLagacyRecord()
 
         self.initialize(filename)
-        print(type(consensus))
         print(consensus)
 
         if self.maze is None:
@@ -67,10 +67,20 @@ if __name__ == "__main__":
     parser.add_argument('--altcolor', dest="altcolor", default = False, action = "store_true",
                         help='View in an alternate color scheme.')
     parser.add_argument('--consensus', dest="consensus", type=bool, default=False,
-                        help='whether use consensus - default true')
+                        help='whether use consensus - default False')
+    parser.add_argument('--createMap', dest="createMap", type=bool, default=False,
+                        help='whether create Map for each worker - default False')
 
     args = parser.parse_args()
 
     app = Application(args.scale, args.fps,args.altcolor)
 
-    app.execute(args.filename, args.save, args.consensus)
+    originFilename = args.filename
+    mazeName = originFilename.split("/")
+    filename = originFilename + "/" + mazeName[-1]
+    args.filename = filename
+
+    if args.createMap:
+        create(args.filename)
+    else:
+        app.execute(args.filename, args.save, args.consensus)

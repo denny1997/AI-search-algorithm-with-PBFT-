@@ -54,9 +54,9 @@ class Application:
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description='CS440 MP1 Search')
+    parser = argparse.ArgumentParser(description='PBFT Search')
 
-    parser.add_argument('filename',
+    parser.add_argument('--filename',dest='filename',
                         help='path to maze file [REQUIRED]')
     parser.add_argument('--scale', dest="scale", type=int, default = 20,
                         help='scale - default: 20')
@@ -76,9 +76,8 @@ if __name__ == "__main__":
     app = Application(args.scale, args.fps,args.altcolor)
 
     originFilename = args.filename
-    mazeName = originFilename.split("/")
-    filename = originFilename + "/" + mazeName[-1]
-    args.filename = filename
+    path = "../map"
+    args.filename = path + "/" + originFilename + "/" + originFilename
 
     if args.createMap:
         create(args.filename)
